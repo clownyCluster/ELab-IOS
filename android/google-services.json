@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "159527102703",
+    "project_id": "elab-nepal",
+    "storage_bucket": "elab-nepal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159527102703:android:65aae0237180b59480531a",
+        "android_client_info": {
+          "package_name": "com.ktmrush.elab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159527102703-tmq65mka2vcm1inpgettpm7ocinolmg9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-wWlNhbkB8I7S8trdtSi6dQh-Aia-iWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159527102703-5fdcv9tiiu13jpdm292053rfs9113l6i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "159527102703-h0iasfteskbolja1609d3dv5e0bess6c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ktmrush.elab.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

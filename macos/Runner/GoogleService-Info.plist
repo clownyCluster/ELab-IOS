@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>159527102703-h0iasfteskbolja1609d3dv5e0bess6c.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.159527102703-h0iasfteskbolja1609d3dv5e0bess6c</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBJWKMzI7YIulEhCsY-fdHPIPZynXSKHqw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>159527102703</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ktmrush.elab.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>elab-nepal</string>
+	<key>STORAGE_BUCKET</key>
+	<string>elab-nepal.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:159527102703:ios:29789644e01c981f80531a</string>
+</dict>
+</plist>

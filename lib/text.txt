@@ -1,0 +1,1663 @@
+// import 'package:dio/dio.dart';
+// import 'package:elab/ApiModel/cart_list_model.dart';
+// // import 'package:elab/constant/constant.dart';
+// // import 'package:elab/main.dart';
+// // import 'package:elab/screen/HomeModule/home_display.dart';
+// import 'package:elab/service/local_storage_service.dart';
+// import 'package:elab/service/toast_service.dart';
+// import 'package:flutter/material.dart';
+
+// import '../../constant/constant.dart';
+
+// class CartState extends ChangeNotifier {
+//   CartState() {
+//     getCart();
+//   }
+//   bool isCheckBox = false;
+//   onCheckBoxChanged(val) {
+//     isCheckBox = val;
+//     notifyListeners();
+//   }
+
+//   int totalPrice = 0;
+
+//   // onCountAdd(index) {
+//   //   quantity[index]++;
+//   //   notifyListeners();
+//   // }
+
+//   // onCountSub(index) {
+//   //   if (quantity[index] > 1) {
+//   //     quantity[index]--;
+//   //   } else {
+//   //     quantity[index] = 1;
+//   //   }
+//   // }
+
+//   Dio dio = Dio();
+//   var token = LocalStorageService().read(LocalStorageKeys.accessToken);
+//   CartListModel? cartListResponse;
+//   bool isLoading = false;
+//   setLoading(val) {
+//     isLoading = val;
+//     notifyListeners();
+//   }
+
+//   List<int>? quantity = [1];
+//   onQuantity(val) {
+//     quantity = val;
+//     notifyListeners();
+//   }
+
+//   patchCart(slugId) async {
+//     var data = {
+//       'quantity': quantity,
+//     };
+//     try {
+//       setLoading(true);
+
+//       var response = await dio.patch(
+//           '$base_url/update_cart/$slugId',
+//           data: data,
+//           options: Options(headers: {
+//             'apikey': 'elab-ktmrush-api-v1-2023',
+//             'Authorization': 'Bearer $token'
+//           }));
+//       print(data);
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+
+//   getCart() async {
+//     try {
+//       setLoading(true);
+//       var response = await dio.get(
+//         '$base_url/cart_list',
+//         options: Options(
+//           headers: {
+//             'apikey': 'elab-ktmrush-api-v1-2023',
+//             'Authorization': 'Bearer $token'
+//           },
+//         ),
+//       );
+
+//       cartListResponse = CartListModel.fromJson(response.data);
+//       // quantity = List<int>.filled(cartListResponse!.data!.length, 1);
+//       // quantity = List.generate(cartListResponse!.data!.length,(index)=> 0);
+//       // Initialize the quantity list with 1 for each item in the cart
+//       // quantity = List.generate(
+//       //   cartListResponse!.data!.length,
+//       //   (index) => 1,
+//       // );
+
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+
+//   void onCountAdd(int index) {
+//     quantity![index]++;
+//     notifyListeners();
+//   }
+
+//   void onCountSub(int index) {
+//     if (quantity![index] > 1) {
+//       quantity![index]--;
+//     } else {
+//       quantity![index] = 1;
+//     }
+//     notifyListeners();
+//   }
+
+//   deleteCart(deletList) async {
+//     try {
+//       setLoading(true);
+//       var response = await dio.delete(
+//           '$base_url/remove_cart/$deletList',
+//           options: Options(headers: {
+//             'apikey': 'elab-ktmrush-api-v1-2023',
+//             'Authorization': 'Bearer $token'
+//           }));
+
+//       await getCart();
+//       // navigatorKey.currentState!.pushNamed(HomeDisplay.id);
+//       ToastService().s(response.data['message']);
+
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+// }
+
+// import 'package:dio/dio.dart';
+// import 'package:elab/ApiModel/cart_list_model.dart';
+// // import 'package:elab/constant/constant.dart';
+// // import 'package:elab/main.dart';
+// // import 'package:elab/screen/HomeModule/home_display.dart';
+// import 'package:elab/service/local_storage_service.dart';
+// import 'package:elab/service/toast_service.dart';
+// import 'package:flutter/material.dart';
+
+// // import '../../constant/constant.dart';
+
+// class CartState extends ChangeNotifier {
+//   CartState() {
+//     getCart();
+//   }
+//   bool isCheckBox = false;
+//   onCheckBoxChanged(val) {
+//     isCheckBox = val;
+//     notifyListeners();
+//   }
+
+//   int totalPrice = 0;
+
+//   onCountAdd(val, slug) {
+//     quantity++;
+//     notifyListeners();
+//     patchCart(slug);
+//   }
+
+//   onCountSub(val, slug) {
+//     if (quantity > 1) {
+//       quantity--;
+//       notifyListeners();
+//       // print(count);
+//     }
+//     patchCart(slug);
+//   }
+
+//   Dio dio = Dio();
+//   var token = LocalStorageService().read(LocalStorageKeys.accessToken);
+//   CartListModel? cartListResponse;
+//   bool isLoading = false;
+//   setLoading(val) {
+//     isLoading = val;
+//     notifyListeners();
+//   }
+
+//   int? quantityItems;
+//   int quantity = quantityItems ?? 0;
+//   onQuantity(val) {
+//     quantity = val;
+//     notifyListeners();
+//   }
+
+//   patchCart(slugId) async {
+//     var data = {
+//       'quantity': quantity,
+//     };
+//     try {
+//       setLoading(true);
+
+//       var response = await dio.patch(
+//           '$base_url/update_cart/$slugId',
+//           data: data,
+//           options: Options(headers: {
+//             'apikey': 'elab-ktmrush-api-v1-2023',
+//             'Authorization': 'Bearer $token'
+//           }));
+//       print(data);
+
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+
+//   getCart() async {
+//     try {
+//       setLoading(true);
+//       var response = await dio.get(
+//           '$base_url/cart_list',
+//           options: Options(headers: {
+//             'apikey': 'elab-ktmrush-api-v1-2023',
+//             'Authorization': 'Bearer $token'
+//           }));
+//       cartListResponse = CartListModel.fromJson(response.data);
+//       // quantityItems = response.data![0]['data']['quantity'];
+
+//       quantityItems = response.data['data']![0]['quantity'];
+//       print('yo print vayo hai ${response.data['data']![0]['quantity']}');
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+
+//   deleteCart(deletList) async {
+//     try {
+//       setLoading(true);
+//       var response = await dio.delete(
+//           '$base_url/remove_cart/$deletList',
+//           options: Options(headers: {
+//             'apikey': 'elab-ktmrush-api-v1-2023',
+//             'Authorization': 'Bearer $token'
+//           }));
+
+//       await getCart();
+//       // navigatorKey.currentState!.pushNamed(HomeDisplay.id);
+//       ToastService().s(response.data['message']);
+
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+// }
+
+
+
+
+-----------------
+
+// import 'package:dio/dio.dart';
+// import 'package:elab/ApiModel/cart_list_model.dart';
+// import 'package:elab/service/local_storage_service.dart';
+// import 'package:elab/service/toast_service.dart';
+// import 'package:flutter/material.dart';
+
+// class CartState extends ChangeNotifier {
+//   CartState() {
+//     getCart();
+//   }
+
+//   bool isCheckBox = false;
+//   int totalPrice = 0;
+//   int? quantityItems; 
+
+//   Dio dio = Dio();
+//   var token = LocalStorageService().read(LocalStorageKeys.accessToken);
+//   CartListModel? cartListResponse;
+//   bool isLoading = false;
+
+//   // The quantity variable should be private and calculated based on quantityItems
+//   double _quantity = 0;
+//   double get quantity => _quantity;
+//   set quantity(double value) {
+//     _quantity = value;
+//     notifyListeners();
+//   }
+
+//   setLoading(val) {
+//     isLoading = val;
+//     notifyListeners();
+//   }
+
+//   onCheckBoxChanged(val) {
+//     isCheckBox = val;
+//     notifyListeners();
+//   }
+
+//   onCountAdd(val, slug) {
+//     quantity++; // Increment quantity
+//     patchCart(slug); // Call the patchCart method after updating the quantity
+//   }
+
+//   onCountSub(val, slug) {
+//     if (quantity > 1) {
+//       quantity--; // Decrement quantity if greater than 1
+//       patchCart(slug); // Call the patchCart method after updating the quantity
+//     }
+//   }
+
+//   patchCart(slugId) async {
+//     var data = {
+//       'quantity': quantity,
+//     };
+//     try {
+//       setLoading(true);
+
+//       var response = await dio.patch(
+//         '$base_url/update_cart/$slugId',
+//         data: data,
+//         options: Options(headers: {
+//           'apikey': 'elab-ktmrush-api-v1-2023',
+//           'Authorization': 'Bearer $token'
+//         }),
+//       );
+//       print(data);
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+
+//   getCart() async {
+//     try {
+//       setLoading(true);
+//       var response = await dio.get(
+//         '$base_url/cart_list',
+//         options: Options(headers: {
+//           'apikey': 'elab-ktmrush-api-v1-2023',
+//           'Authorization': 'Bearer $token'
+//         }),
+//       );
+//       cartListResponse = CartListModel.fromJson(response.data);
+//       quantityItems = response.data['data']![0]['quantity'] as int?;
+      
+//       quantity = quantityItems?.toDouble() ?? 0;
+
+//       print('yo print vayo hai ${response.data['data']![0]['quantity']}');
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+
+//   deleteCart(deletList) async {
+//     try {
+//       setLoading(true);
+//       var response = await dio.delete(
+//         '$base_url/remove_cart/$deletList',
+//         options: Options(headers: {
+//           'apikey': 'elab-ktmrush-api-v1-2023',
+//           'Authorization': 'Bearer $token'
+//         }),
+//       );
+
+//       await getCart();
+//       // navigatorKey.currentState!.pushNamed(HomeDisplay.id);
+//       ToastService().s(response.data['message']);
+
+//       print(response.data);
+//     } on DioException catch (e) {
+//       print(e.response);
+//     }
+//     setLoading(false);
+//   }
+// }
+
+
+
+=-----------------------------------------
+
+
+
+
+        //  InkWell(
+            //   onTap: () {
+            //     state.deleteCart(slug!);
+            //   },
+            //   child: Icon(
+            //     Icons.delete_outline,
+            //     color: primaryColor,
+            //     size: 30,
+            //   ),
+            // ),
+
+
+
+
+             Column(
+                      children: [
+                        YoutubePlayer(
+                          controller: YoutubePlayerController(
+                            initialVideoId: 'd8w5SICzzxc',
+                            // state.homeCollectionModelResponse!.data!.link!,
+                            flags: YoutubePlayerFlags(
+                                autoPlay: false, mute: false, isLive: false),
+                          ),
+                          progressColors: ProgressBarColors(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              bufferedColor: primaryColor,
+                              handleColor: Color.fromARGB(255, 255, 51, 0),
+                              playedColor: Colors.red),
+                          showVideoProgressIndicator: true,
+                          progressIndicatorColor: primaryColor,
+                        ),
+                        LSizedBox(),
+                        CollectionTile(
+                          description:
+                              state.homeCollectionModelResponse!.data!.content,
+                          title: state.homeCollectionModelResponse!.data!.title,
+                        ),
+                      ],
+                    ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------ Filter----------------
+
+                      // InkWell(
+                                  //     onTap: () {
+                                  //       state.checkBox;
+                                  //     },
+                                  //     child: state.checkBox == false
+                                  //         ? Column(
+                                  //             mainAxisAlignment:
+                                  //                 MainAxisAlignment.start,
+                                  //             crossAxisAlignment:
+                                  //                 CrossAxisAlignment.start,
+                                  //             children: [
+                                  //               Row(
+                                  //                 children: [
+                                  //                   Checkbox(
+                                  //                     tristate: false,
+                                  //                     activeColor: primaryColor,
+                                  //                     shape: CircleBorder(),
+                                  //                     value: state.checkBox,
+                                  //                     onChanged: state
+                                  //                         .onCheckBoxSelected,
+                                  //                   ),
+                                  //                   Text(e.name.toString(),
+                                  //                       style: kBoldTextStyle()
+                                  //                           .copyWith(
+                                  //                               fontSize: 16,
+                                  //                              )),
+                                  //                 ],
+                                  //               ),
+                                  //             ],
+                                  //           )
+                                  //         : Column(
+                                  //             crossAxisAlignment:
+                                  //                 CrossAxisAlignment.start,
+                                  //             mainAxisAlignment:
+                                  //                 MainAxisAlignment.start,
+                                  //             children: [
+                                  //               Row(
+                                  //                 children: [
+                                  //                   Checkbox(
+                                  //                     // tristate: true,
+                                  //                     activeColor: primaryColor,
+                                  //                     shape: CircleBorder(),
+                                  //                     value: state.checkBox,
+                                  //                     onChanged: state
+                                  //                         .onCheckBoxSelected,
+                                  //                   ),
+                                  // Text(
+                                  //   e.name.toString(),
+                                  //   style: kBoldTextStyle()
+                                  //       .copyWith(
+                                  //           fontSize: 15),
+                                  // ),
+                                  //                 ],
+                                  //               ),
+                                  //             ],
+                                  //           )),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:
+                                state.conditionsModelResponse!.data!.map((e) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  InkWell(
+                                      onTap: () {
+                                        state.onSelectedChanged(e.id);
+                                      },
+                                      child: state.selected == e.id
+                                          ? Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      height: 20,
+                                                      width: 20,
+                                                      color: Colors.grey[200],
+                                                      child: Icon(
+                                                        Icons.check,
+                                                        color: primaryColor,
+                                                      ),
+                                                    ),
+                                                    maxWidthSpan(),
+                                                    Text(e.name.toString(),
+                                                        style: kBoldTextStyle()
+                                                            .copyWith(
+                                                                fontSize: 16,
+                                                                color:
+                                                                    primaryColor)),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      color: Colors.grey[200],
+                                                      height: 20,
+                                                      width: 20,
+                                                      child: SizedBox(),
+                                                    ),
+                                                    maxWidthSpan(),
+                                                    Text(
+                                                      e.name.toString(),
+                                                      style: kBoldTextStyle()
+                                                          .copyWith(
+                                                              fontSize: 15),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )),
+                                  kSizedBox(),
+                                ],
+                              );
+                            }).toList()),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                             // InkWell(
+                                  //     onTap: () {
+                                  //       state.onSelectedChanged(e.id);
+                                  //     },
+                                  //     child: state.selected == e.id
+                                  //         ? Column(
+                                  //             mainAxisAlignment:
+                                  //                 MainAxisAlignment.start,
+                                  //             crossAxisAlignment:
+                                  //                 CrossAxisAlignment.start,
+                                  //             children: [
+                                  //               Row(
+                                  //                 children: [
+                                  //                   Container(
+                                  //                     height: 20,
+                                  //                     width: 20,
+                                  //                     color: Colors.grey[200],
+                                  //                     child: Icon(
+                                  //                       Icons.check,
+                                  //                       color: primaryColor,
+                                  //                     ),
+                                  //                   ),
+                                  //                   maxWidthSpan(),
+                                  //                   Text(e.name.toString(),
+                                  //                       style: kBoldTextStyle()
+                                  //                           .copyWith(
+                                  //                               fontSize: 16,
+                                  //                               color:
+                                  //                                   primaryColor)),
+                                  //                 ],
+                                  //               ),
+                                  //             ],
+                                  //           )
+                                  //         : Column(
+                                  //             crossAxisAlignment:
+                                  //                 CrossAxisAlignment.start,
+                                  //             mainAxisAlignment:
+                                  //                 MainAxisAlignment.start,
+                                  //             children: [
+                                  //               Row(
+                                  //                 children: [
+                                  //                   Container(
+                                  //                     color: Colors.grey[200],
+                                  //                     height: 20,
+                                  //                     width: 20,
+                                  //                     child: SizedBox(),
+                                  //                   ),
+                                  //                   maxWidthSpan(),
+                                  //                   Text(
+                                  //                     e.name.toString(),
+                                  //                     style: kBoldTextStyle()
+                                  //                         .copyWith(
+                                  //                             fontSize: 15),
+                                  //                   ),
+                                  //                 ],
+                                  //               ),
+                                  //             ],
+                                  //           )),
+                                  // kSizedBox(),
+
+
+
+
+
+
+
+                                  For search
+                                    // child: ListView.builder(
+                      //   itemCount: state.kidneyPackageResponse!.data!.length,
+                      //   itemBuilder: (context, index) {
+                      //     final name =
+                      //         state.kidneyPackageResponse!.data![index].name!;
+                      //         // final testName =
+                      //         // state.testModelResponse!.data![index].name!;
+                      //       var search =  name.toLowerCase().contains(state.searchController.text).toString().toLowerCase();
+                      //     // if (name.toLowerCase().contains(state
+                      //     //     .searchController.text
+                      //     //     .toString()
+                      //     //     .toLowerCase()) ) {
+                      //     //   print(name.toLowerCase());
+
+                      //     //   return Container(
+                      //     //     padding: EdgeInsets.symmetric(horizontal: 20),
+                      //     //     child: Column(
+                      //     //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //     //       children: [
+                      //     //         InkWell(
+                      //     //           onTap: () {
+                      //     //             Navigator.pushNamed(
+                      //     //               context,
+                      //     //               PackageScreen.id,
+                      //     //               arguments: state.kidneyPackageResponse!
+                      //     //                   .data![index].slug!,
+                      //     //             );
+                      //     //           },
+                      //     //           child: Row(
+                      //     //             children: [
+                      //     //               Container(
+                      //     //                   height: 25,
+                      //     //                   width: 30,
+                      //     //                   child: Image.network(state
+                      //     //                       .kidneyPackageResponse!
+                      //     //                       .data![index]
+                      //     //                       .icon!)),
+                      //     //               maxWidthSpan(),
+                      //     //               Text(
+                      //     //                 state.kidneyPackageResponse!
+                      //     //                     .data![index].name!,
+                      //     //                 style: kTextStyle(),
+                      //     //               ),
+                      //     //             ],
+                      //     //           ),
+                      //     //         ),
+                      //     //         kSizedBox(),
+                      //     //       ],
+                      //     //     ),
+                      //     //   );
+                      //     // }
+                      //     //  else if (testName.toLowerCase().contains(state
+                      //     //     .searchController.text
+                      //     //     .toString()
+                      //     //     .toLowerCase())) {
+                      //     //   return Container(
+                      //     //     padding: EdgeInsets.symmetric(horizontal: 20),
+                      //     //     child: Column(
+                      //     //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //     //       children: [
+                      //     //         InkWell(
+                      //     //           onTap: () {
+                      //     //             Navigator.pushNamed(
+                      //     //               context,
+                      //     //               IndividuleTestScreen.id,
+                      //     //               arguments: state.testModelResponse!
+                      //     //                   .data![index].slug!,
+                      //     //             );
+                      //     //           },
+                      //     //           child: Row(
+                      //     //             children: [
+                      //     //               Container(
+                      //     //                   height: 25,
+                      //     //                   width: 30,
+                      //     //                   child: Image.network(state
+                      //     //                       .testModelResponse!
+                      //     //                       .data![index]
+                      //     //                       .thumbnail!)),
+                      //     //               maxWidthSpan(),
+                      //     //               Text(
+                      //     //                 state.testModelResponse!.data![index]
+                      //     //                     .name!,
+                      //     //                 style: kTextStyle(),
+                      //     //               ),
+                      //     //             ],
+                      //     //           ),
+                      //     //         ),
+                      //     //         kSizedBox(),
+                      //     //       ],
+                      //     //     ),
+                      //     //   );
+                      //     // }
+                      //   },
+                      // ),
+
+
+
+
+
+
+
+
+
+
+
+                      Drawer
+                         // drawer: Drawer(
+              //   backgroundColor: Colors.white,
+              //   child: SingleChildScrollView(
+              //     child: Container(
+              //       padding: kPadding(),
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           Container(
+              //             height: 70,
+              //             child: Image.asset('assets/images/logo.png'),
+              //             // child: Image.network(
+              //             //     state.extraResponse!.data!.logo!),
+              //           ),
+              //           Divider(
+              //             color: Colors.grey[400],
+              //             thickness: 1,
+              //           ),
+              //           kSizedBox(),
+              //           InkWell(
+              //             onTap: () {
+              //               Navigator.pushNamed(
+              //                   context, HealthPackagesScreen.id);
+              //             },
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   'Health packages',
+              //                   style: kTextStyle().copyWith(fontSize: 15),
+              //                 ),
+              //                 Icon(
+              //                   Icons.arrow_forward_ios,
+              //                   size: 15,
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //           LSizedBox(),
+              //           InkWell(
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   'Our Tests ',
+              //                   style: kTextStyle().copyWith(fontSize: 15),
+              //                 ),
+              //                 Icon(
+              //                   Icons.arrow_forward_ios,
+              //                   size: 15,
+              //                 ),
+              //               ],
+              //             ),
+              //             onTap: () {
+              //               Navigator.pushNamed(
+              //                   context, IndividuleTestScreen.id);
+              //             },
+              //           ),
+              //           // Divider(
+              //           //   color: Colors.grey[400],
+              //           //   thickness: 1,
+              //           // ),
+              //           LSizedBox(),
+              //           InkWell(
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   'Upload A Prescription ',
+              //                   style: kTextStyle().copyWith(fontSize: 15),
+              //                 ),
+              //                 Icon(
+              //                   Icons.arrow_forward_ios,
+              //                   size: 15,
+              //                 ),
+              //               ],
+              //             ),
+              //             onTap: () {
+              //               Navigator.pushNamed(
+              //                   context, UploadePrescriptionScreen.id);
+              //             },
+              //           ),
+              //           // Divider(
+              //           //   color: Colors.grey[400],
+              //           //   thickness: 1,
+              //           // ),
+              //           LSizedBox(),
+              //           InkWell(
+              //             onTap: () {
+              //               // Navigator.pushNamed(context, AboutUsScreen.id);
+              //             },
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   'Download Reports',
+              //                   style: kTextStyle().copyWith(fontSize: 15),
+              //                 ),
+              //                 Icon(
+              //                   Icons.arrow_forward_ios,
+              //                   size: 15,
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //           // Divider(
+              //           //   color: Colors.grey[400],
+              //           //   thickness: 1,
+              //           // ),
+
+              //           // Divider(
+              //           //   color: Colors.grey[400],
+              //           //   thickness: 1,
+              //           // ),
+              //           LSizedBox(),
+              //           InkWell(
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   'About Us',
+              //                   style: kTextStyle().copyWith(fontSize: 15),
+              //                 ),
+              //                 Icon(
+              //                   Icons.arrow_forward_ios,
+              //                   size: 15,
+              //                 ),
+              //               ],
+              //             ),
+              //             onTap: () {
+              //               Navigator.pushNamed(context, AboutUsScreen.id);
+              //             },
+              //           ),
+              //           // Divider(
+              //           //   color: Colors.grey[400],
+              //           //   thickness: 1,
+              //           // ),
+              //           LSizedBox(),
+              //           InkWell(
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   'Blogs',
+              //                   style: kTextStyle().copyWith(fontSize: 15),
+              //                 ),
+              //                 Icon(
+              //                   Icons.arrow_forward_ios,
+              //                   size: 15,
+              //                 ),
+              //               ],
+              //             ),
+              //             onTap: () {
+              //               Navigator.pushNamed(context, BlogsScreen.id);
+              //             },
+              //           ),
+              //           kSizedBox(),
+              //           Divider(
+              //             color: Colors.grey[400],
+              //             thickness: 1,
+              //           ),
+
+              //           // InkWell(
+              //           //   onTap: () {
+              //           //     Navigator.pushNamed(context, TeamsScreen.id);
+              //           //   },
+              //           //   child: Row(
+              //           //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           //     children: [
+              //           //       Text(
+              //           //         'Our Teams',
+              //           //         style: kTextStyle().copyWith(fontSize: 15),
+              //           //       ),
+              //           //       Icon(
+              //           //         Icons.arrow_forward_ios,
+              //           //         size: 15,
+              //           //       ),
+              //           //     ],
+              //           //   ),
+              //           // ),
+              //           // LSizedBox(),
+
+              //           sSizedBox(),
+
+              //           Text(
+              //             'Contact Us',
+              //             style: kkBoldTextStyle().copyWith(fontSize: 15),
+              //           ),
+              //           kSizedBox(),
+              //           InkWell(
+              //             onTap: () {
+              //               state.makePhoneCall();
+              //             },
+              //             child: Row(
+              //               children: [
+              //                 Icon(
+              //                   Icons.call,
+              //                   size: 18,
+              //                 ),
+              //                 minWidthSpan(),
+              //                 Text(
+              //                   '9851358000',
+              //                   style: kTextStyle().copyWith(fontSize: 15),
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //           sSizedBox(),
+              //           Row(
+              //             children: [
+              //               Icon(
+              //                 Icons.mail,
+              //                 size: 18,
+              //               ),
+              //               minWidthSpan(),
+              //               Text('mail@mailcompany.com',
+              //                   style: kTextStyle().copyWith(fontSize: 15)),
+              //             ],
+              //           ),
+              //           sSizedBox(),
+              //           InkWell(
+              //             onTap: () {
+              //               state.launchGoogleMaps(27.7196, 85.3372);
+              //             },
+              //             child: Row(
+              //               children: [
+              //                 Icon(
+              //                   Icons.location_on,
+              //                   size: 18,
+              //                 ),
+              //                 minWidthSpan(),
+              //                 Text('Kathmandu, nepal',
+              //                     style: kTextStyle().copyWith(fontSize: 15)),
+              //               ],
+              //             ),
+              //           ),
+              //           sSizedBox(),
+              //           Divider(
+              //             color: Colors.grey[400],
+              //             thickness: 1,
+              //           ),
+              //           sSizedBox(),
+              //           Text(
+              //             'Follow our Social Media',
+              //             style: kkBoldTextStyle().copyWith(fontSize: 15),
+              //           ),
+              //           kSizedBox(),
+              //           Row(
+              //             children: [
+              //               InkWell(
+              //                   onTap: () {
+              //                     state.openFacebook();
+              //                   },
+              //                   child:
+              //                       Image.asset('assets/images/facebook.png')),
+              //               maxWidthSpan(),
+              //               InkWell(
+              //                 onTap: () {
+              //                   state.openInstagram();
+              //                 },
+              //                 child: Image.asset(
+              //                   'assets/images/instagramLogo.png',
+              //                   height: 30,
+              //                 ),
+              //               ),
+              //               maxWidthSpan(),
+              //               Image.asset('assets/images/linkedin.png'),
+              //               maxWidthSpan(),
+              //               // InkWell(
+              //               //   onTap: () {
+              //               //     state.openWhatsApp();
+              //               //   },
+              //               //   // child: Image.asset(
+              //               //   //   'assets/images/whatsapp.png',
+              //               //   //   height: 30,
+              //               //   // ),
+              //               // ),
+              //               // maxWidthSpan(),
+              //               InkWell(
+              //                 onTap: () {
+              //                   state.openTikTok();
+              //                 },
+              //                 child: Image.asset(
+              //                   'assets/images/tiktok.png',
+              //                   height: 30,
+              //                 ),
+              //               )
+              //             ],
+              //           ),
+              //           sSizedBox(),
+              //           Divider(
+              //             color: Colors.grey[400],
+              //             thickness: 1,
+              //           ),
+              //           kSizedBox(),
+              //           InkWell(
+              //             onTap: () {
+              //               if (state.token == null) {
+              //                 ToastService().e(
+              //                     'You have to login to access this feature');
+              //               } else {
+              //                 Navigator.pushNamed(
+              //                     context, RequestCallBackScreen.id);
+              //               }
+              //             },
+              //             child: Container(
+              //               padding: kPadding(),
+              //               decoration: BoxDecoration(
+              //                 color: primaryColor,
+              //                 borderRadius: BorderRadius.circular(10),
+              //               ),
+              //               child: Row(
+              //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //                 children: [
+              //                   Row(
+              //                     children: [
+              //                       Icon(
+              //                         Icons.call,
+              //                         color: Colors.white,
+              //                         size: 18,
+              //                       ),
+              //                       maxWidthSpan(),
+              //                       Text(
+              //                         'Request A Callback',
+              //                         style: kTextStyle().copyWith(
+              //                             fontSize: 15, color: Colors.white),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                   Icon(
+              //                     Icons.arrow_forward_ios,
+              //                     size: 15,
+              //                     color: Colors.white,
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //           kSizedBox(),
+              //           InkWell(
+              //             onTap: () {
+              //               state.openWhatsApp();
+              //             },
+              //             child: Container(
+              //               padding: kPadding(),
+              //               decoration: BoxDecoration(
+              //                   borderRadius: BorderRadius.circular(10),
+              //                   color: Colors.green),
+              //               child: Row(
+              //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //                 children: [
+              //                   Row(
+              //                     children: [
+              //                       Image.asset(
+              //                         'assets/images/whatsapp.png',
+              //                         height: 18,
+              //                         color: Colors.white,
+              //                       ),
+              //                       maxWidthSpan(),
+              //                       Text(
+              //                         'Whatsapp',
+              //                         style: kTextStyle().copyWith(
+              //                             fontSize: 15, color: Colors.white),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                   Icon(
+              //                     Icons.arrow_forward_ios,
+              //                     size: 15,
+              //                     color: Colors.white,
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+
+              //           kSizedBox(),
+              //           InkWell(
+              //             onTap: () {
+              //               Navigator.popAndPushNamed(context, LoginScreen.id);
+              //             },
+              //             child: Container(
+              //               padding: kPadding(),
+              //               decoration: BoxDecoration(
+              //                   borderRadius: BorderRadius.circular(10),
+              //                   color: Colors.red),
+              //               child: Row(
+              //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //                 children: [
+              //                   Row(
+              //                     mainAxisAlignment:
+              //                         MainAxisAlignment.spaceAround,
+              //                     children: [
+              //                       Icon(
+              //                         Icons.login,
+              //                         color: Colors.white,
+              //                         size: 18,
+              //                       ),
+              //                       maxWidthSpan(),
+              //                       Text(
+              //                         'Log In',
+              //                         style: kTextStyle().copyWith(
+              //                             fontSize: 15, color: Colors.white),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                   Icon(
+              //                     Icons.arrow_forward_ios,
+              //                     size: 15,
+              //                     color: Colors.white,
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                 // Container(
+                          //   padding: kStandardPadding(),
+                          //   decoration: BoxDecoration(
+                          //     // border: Border.all(width: 1, color: Colors.grey),
+                          //     color: Colors.white,
+                          //     borderRadius: BorderRadius.circular(10),
+                          //     boxShadow: [
+                          //       BoxShadow(
+                          //         color:
+                          //             const Color.fromARGB(255, 196, 196, 196),
+                          //         blurRadius: 2.0, // soften the shadow
+                          //         spreadRadius: 1.3, //extend the shadow
+                          //         offset: Offset(
+                          //           2.0,
+                          //           2,
+                          //         ),
+                          //       )
+                          //     ],
+                          //   ),
+                          //   child: Column(
+                          //     mainAxisAlignment: MainAxisAlignment.start,
+                          //     children: [
+                          //       Text(
+                          //         'Download Sample Report',
+                          //         style: kkBoldTextStyle(),
+                          //       ),
+                          //       Row(
+                          //         mainAxisAlignment:
+                          //             MainAxisAlignment.spaceBetween,
+                          //         children: [
+                          //           Image.asset(
+                          //               'assets/images/sample-report.png'),
+                          //           Image.asset(
+                          //               'assets/images/sample-report.png'),
+                          //         ],
+                          //       ),
+                          //       kSizedBox(),
+                          //       Container(
+                          //         decoration: BoxDecoration(
+                          //           // border: Border.all(width: 1, color: Colors.grey),
+                          //           color: secondaryColor,
+
+                          //           borderRadius: BorderRadius.circular(10),
+                          //           boxShadow: [
+                          //             BoxShadow(
+                          //               color: const Color.fromARGB(
+                          //                   255, 231, 231, 231),
+                          //               blurRadius: 15.0, // soften the shadow
+                          //               spreadRadius: 5.0, //extend the shadow
+                          //               offset: Offset(
+                          //                 2.0, // Move to right 5  horizontally
+                          //                 2.0, // Move to bottom 5 Vertically
+                          //               ),
+                          //             )
+                          //           ],
+                          //         ),
+                          //         height: 50,
+                          //         width: double.infinity,
+                          //         child: Center(
+                          //             child: Text(
+                          //           'Download Sample Report',
+                          //           style: kWhiteBoldTextStyle(),
+                          //         )),
+                          //       )
+                          //     ],
+                          //   ),
+                          // ),
+
+
+
+
+
+
+
+
+
+                          -------------------------------Dropdown------------------------------------
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: state.packageModelResponse!.data!
+                                  .testsAndParameters!
+                                  .map((e) => Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                color: primaryColor,
+                                                // borderRadius: BorderRadius.only(
+                                                //     bottomLeft:
+                                                //         Radius.circular(10),
+                                                //     bottomRight:
+                                                //         Radius.circular(10),
+                                                //     topLeft:
+                                                //         Radius.circular(10),
+                                                //     topRight:
+                                                //         Radius.circular(10))
+                                                        ),
+                                            child: Column(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    state.onExpandedChange();
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          e.test!,
+                                                          style:
+                                                              kWhiteBoldTextStyle(),
+                                                        ),
+                                                        state.isExpanded == true
+                                                            ? Icon(
+                                                                Icons
+                                                                    .arrow_drop_down,
+                                                                color:
+                                                                    Colors
+                                                                        .white,
+                                                                size: 16)
+                                                            : Icon(
+                                                                Icons
+                                                                    .arrow_forward_ios,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 16),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                state.isExpanded == true
+                                                    ? Column(
+                                                        children: e.parmeters!
+                                                            .map((data) {
+                                                          return Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    // borderRadius:
+                                                                    //     BorderRadius
+                                                                    //         .only(
+                                                                    //   bottomLeft:
+                                                                    //       Radius.circular(
+                                                                    //           10),
+                                                                    //   bottomRight:
+                                                                    //       Radius.circular(
+                                                                    //           10),
+                                                                    // ),
+                                                                    color: Colors
+                                                                        .white),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    data,
+                                                                    style: kTextStyle().copyWith(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            0,
+                                                                            0,
+                                                                            0)),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                      )
+                                                    : Container(),
+                                              ],
+                                            ),
+                                          ),
+                                          sSizedBox(),
+                                        ],
+                                      ))
+                                  .toList())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ------------------Slider---------------
+       Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  width: double.infinity,
+                                  child: ImageSlideshow(
+                                    width: double.infinity,
+                                    height: 200,
+                                    initialPage: 0,
+                                    indicatorColor:
+                                        Color.fromARGB(255, 47, 61, 143),
+                                    indicatorBackgroundColor: Colors.grey,
+                                    onPageChanged: (value) {},
+                                    autoPlayInterval: 2000,
+                                    isLoop: true,
+                                    children: state.sliderModelResponse!.data!
+                                        .map((e) {
+                                      return Image.network(
+                                        e.image!,
+                                        height: 50,
+                                        width: 50,
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          } else {
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                color: primaryColor,
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        fit: BoxFit.cover,
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+
+
+
+
+
+
+
+
+
+
+
+
+Table
+
+
+                                 // Container(
+                      //   child: DataTable(
+                      //     border: TableBorder.all(width: 1),
+                      //     columnSpacing: 16,
+                      //     headingRowHeight: 40,
+                      //     dataRowHeight: 70,
+                      //     columns: [
+                      //       DataColumn(label: Text('Test Name')),
+                      //       DataColumn(label: Text('Normal Value')),
+                      //       DataColumn(label: Text('Latest \nValue ')),
+                      //       DataColumn(label: Text('Last \nValue')),
+                      //     ],
+                      //     rows: report.children!.map((e) {
+                      //       if (e.childrens != null) {
+                      //         return DataRow(cells: [
+                      //           DataCell(Container(
+                      //             padding: EdgeInsets.only(left: 0),
+                      //             margin: EdgeInsets.only(left:0),
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.start,
+                      //               crossAxisAlignment:
+                      //                   CrossAxisAlignment.start,
+                      //               children: [
+                      //                 Container(
+                      //                   width: 60,
+                      //                   child: Text(
+                      //                     e.parameterName ?? '-',
+                      //                     overflow: TextOverflow.ellipsis,
+                      //                     maxLines: 1,
+                      //                   ),
+                      //                 ),
+                      //                 Column(
+                      //                   mainAxisAlignment:
+                      //                       MainAxisAlignment.start,
+                      //                   crossAxisAlignment:
+                      //                       CrossAxisAlignment.start,
+                      //                   children: e.childrens!.map((data) {
+                      //                     return Column(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.start,
+                      //                       crossAxisAlignment:
+                      //                           CrossAxisAlignment.start,
+                      //                       children: [
+                      //                         Column(
+                      //                           mainAxisAlignment:
+                      //                               MainAxisAlignment.start,
+                      //                           children: [
+                      //                             Text(data.parameterName
+                      //                                 .toString()),
+                      //                           ],
+                      //                         ),
+                      //                       ],
+                      //                     );
+                      //                   }).toList(),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           )),
+                      //           DataCell(Container(
+                      //             padding: EdgeInsets.only(left: 0),
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.start,
+                      //               crossAxisAlignment:
+                      //                   CrossAxisAlignment.start,
+                      //               children: [
+                      //                 Text(
+                      //                   e.parameterRange ?? '-',
+                      //                   overflow: TextOverflow.ellipsis,
+                      //                   maxLines: 2,
+                      //                 ),
+                      //                 Column(
+                      //                   mainAxisAlignment:
+                      //                       MainAxisAlignment.start,
+                      //                   crossAxisAlignment:
+                      //                       CrossAxisAlignment.start,
+                      //                   children: e.childrens!.map((data) {
+                      //                     return Column(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.start,
+                      //                       crossAxisAlignment:
+                      //                           CrossAxisAlignment.start,
+                      //                       children: [
+                      //                         Column(
+                      //                           mainAxisAlignment:
+                      //                               MainAxisAlignment.start,
+                      //                           children: [
+                      //                             Text(data.parameterRange
+                      //                                 .toString()),
+                      //                           ],
+                      //                         ),
+                      //                       ],
+                      //                     );
+                      //                   }).toList(),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           )),
+                      //           DataCell(Container(
+                      //             padding: EdgeInsets.only(left: 0),
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.start,
+                      //               crossAxisAlignment:
+                      //                   CrossAxisAlignment.start,
+                      //               children: [
+                      //                 Text(
+                      //                   e.latestValue ?? '',
+                      //                   overflow: TextOverflow.ellipsis,
+                      //                   maxLines: 2,
+                      //                 ),
+                      //                 Column(
+                      //                   mainAxisAlignment:
+                      //                       MainAxisAlignment.start,
+                      //                   crossAxisAlignment:
+                      //                       CrossAxisAlignment.start,
+                      //                   children: e.childrens!.map((data) {
+                      //                     return Column(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.start,
+                      //                       crossAxisAlignment:
+                      //                           CrossAxisAlignment.start,
+                      //                       children: [
+                      //                         Column(
+                      //                           mainAxisAlignment:
+                      //                               MainAxisAlignment.start,
+                      //                           children: [
+                      //                             Text(data.latestValue
+                      //                                 .toString()),
+                      //                           ],
+                      //                         ),
+                      //                       ],
+                      //                     );
+                      //                   }).toList(),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           )),
+                      //           DataCell(Container(
+                      //             padding: EdgeInsets.only(left: 0),
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.start,
+                      //               crossAxisAlignment:
+                      //                   CrossAxisAlignment.start,
+                      //               children: [
+                      //                 Text(
+                      //                   e.lastValue ?? '',
+                      //                   overflow: TextOverflow.ellipsis,
+                      //                   maxLines: 1,
+                      //                 ),
+                      //                 Column(
+                      //                   mainAxisAlignment:
+                      //                       MainAxisAlignment.start,
+                      //                   crossAxisAlignment:
+                      //                       CrossAxisAlignment.start,
+                      //                   children: e.childrens!.map((data) {
+                      //                     return Column(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.start,
+                      //                       crossAxisAlignment:
+                      //                           CrossAxisAlignment.start,
+                      //                       children: [
+                      //                         Column(
+                      //                           mainAxisAlignment:
+                      //                               MainAxisAlignment.start,
+                      //                           children: [
+                      //                             Text(data.lastValue
+                      //                                 .toString()),
+                      //                           ],
+                      //                         ),
+                      //                       ],
+                      //                     );
+                      //                   }).toList(),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           )),
+                      //         ]);
+                      //       } else {
+                      //         return DataRow(cells: [
+                      //           DataCell(Text(e.parameterName ?? '')),
+                      //           DataCell(Text(e.parameterRange ?? '')),
+                      //           DataCell(Text(e.latestValue ?? '')),
+                      //           DataCell(Text(e.lastValue ?? '')),
+                      //         ]);
+                      //       }
+                      //     }).toList(),
+                      //   ),
+                      // ),
